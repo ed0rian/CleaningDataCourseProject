@@ -14,6 +14,8 @@ labelsSelected  <- featureLabels[labelsSelectedN]
 
 ## Read the list of activities into a vector (hence the [[1]]), drop line numbers
 activityLabels  <- fread("activity_labels.txt", header = FALSE, drop = 1)[[1]]
+## Convert the activity labels to lowercase
+activityLabels  <- tolower(activityLabels)
 
 ## Read list of training-data subjects, extract the only vector [[1]]
 trainSubjects   <- fread("train/subject_train.txt", header = FALSE)[[1]]
@@ -95,6 +97,8 @@ labels <- colnames(workData)
 meanData <- aggregate(subset(workData, ,3:68), list(workData$Subject, workData$Activity), mean)
 ## Restore column names
 setnames(meanData, labels)
+## Rename activities to indicate they are now representing averages (means)
+meanData$Activity <- paste(meanData$Activity, "mean", sep = ".")
 
 ## Finally write the tidy average dataset to disk
 write.table(meanData, "tidy_data_mean.txt", row.name = FALSE)
