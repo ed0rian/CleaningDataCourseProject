@@ -29,7 +29,6 @@ trainData       <- data.table(trainData)
 testSubjects    <- fread("test/subject_test.txt", header = FALSE)[[1]]
 ## Read numeric list of test-data activities, extract the only vector [[1]]
 testActivityN   <- fread("test/y_test.txt", header = FALSE)[[1]]
-trainActivityN  <- fread("train/y_train.txt", header = FALSE)[[1]]
 ## Read test data. Using fread for this data in data.table 1.9.4 crashes R
 testData        <- read.table("test/X_test.txt")
 testData        <- data.table(testData)
@@ -81,6 +80,7 @@ labels   <- sapply(labels, function(x) gsub("-std()-X", ".X.std", x, fixed = TRU
 labels   <- sapply(labels, function(x) gsub("-std()-Y", ".Y.std", x, fixed = TRUE), USE.NAMES = FALSE)
 labels   <- sapply(labels, function(x) gsub("-std()-Z", ".Z.std", x, fixed = TRUE), USE.NAMES = FALSE)
 labels   <- sapply(labels, function(x) gsub("-std()", ".std", x, fixed = TRUE), USE.NAMES = FALSE)
+labels   <- sapply(labels, function(x) gsub("BodyBody", "Body", x, fixed = TRUE), USE.NAMES = FALSE)
 ## Apply column names to working dataset
 setnames(workData, labels)
 ## Reorder columns alphabetically, except for 'Subject' and 'Activity'
@@ -94,7 +94,12 @@ workData <- setcolorder(workData,
 labels <- colnames(workData)
 
 ## Compile a table of average (== mean) data per subject and activity
-meanData <- aggregate(subset(workData, ,3:68), list(workData$Subject, workData$Activity), mean)
+meanData <- data.table(
+                aggregate(subset(workData, ,3:68), 
+                          list(workData$Subject, workData$Activity), 
+                          mean
+                )
+            )
 ## Restore column names
 setnames(meanData, labels)
 ## Rename activities to indicate they are now representing averages (means)
