@@ -74,6 +74,6 @@ measurements of that activity.
 Now the average data is written to the file 'tidy_data_mean.txt' as requested by
 the instructions. Step 5 completed!
 
-Read the table with:
-library(data.table)
+Read the table with:  
+library(data.table)  
 tidyData <- fread("tidy_data_mean.txt")
